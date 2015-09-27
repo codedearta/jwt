@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.dearta.jwt</groupId>
-    <artifactId>adrcjwt</artifactId>
+    <artifactId>jwt</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -31,48 +31,12 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>de.borntohula.dropwizard</groupId>-->
-            <!--<artifactId>dropwizard-auth-jwt</artifactId>-->
-            <!--<version>0.1.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <version>6.1.25</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <version>6.1.25</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
-            <version>6.1.25</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5</version>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.bitbucket.b_c</groupId>-->
-            <!--<artifactId>jose4j</artifactId>-->
-            <!--<version>0.4.4</version>-->
-        <!--</dependency>-->
     </dependencies>
 
 
