@@ -7,9 +7,10 @@ import org.dearta.jwt.JwtToken;
 import org.dearta.jwt.User;
 import org.dearta.jwt.configuration.JwtConfiguration;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,18 +30,21 @@ public class AuthResource {
     @POST
     @Timed
     @Consumes(MediaType.APPLICATION_JSON)
-    public Map<String, String> post(Credentials credentials) throws Exception {
-        JwtToken token = new JwtToken(Collections.singletonMap("user", credentials.username), jwtConfiguration.getKey());
-        //NewCookie cookies = new NewCookie(new Cookie("jwtToken", token.toBase64()));
+    public Map<String, String> post(Credentials credentials, @Context HttpServletRequest request) throws Exception {
+
+        JwtToken token = new JwtToken("DEARTA")
+                .withUserClaim(credentials.username)
+                .withIdClaim()
+                .withClientIpClaim(request.getRemoteAddr())
+                .withExpireClaim(60)
+                .sign(jwtConfiguration.getKey());
 
         Map<String, String> response = new HashMap<String, String>();
         response.put("access_token", token.toBase64());
         response.put("token_type","Bearer");
-        response.put("expires_in","");
+        response.put("expires_in", token.claims.get(JwtToken.CLAIM_NAME_EXPIRE));
 
         return response;
-
-        //return Response.status(Response.Status.OK).type(MediaType.TEXT_HTML).entity(response).cookie(cookies).build();
     }
 
 
