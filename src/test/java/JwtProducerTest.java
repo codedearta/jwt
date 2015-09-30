@@ -1,6 +1,8 @@
 import org.dearta.jwt.JwtToken;
 import org.junit.Test;
 
+import java.net.InetAddress;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -10,25 +12,43 @@ import static org.hamcrest.core.IsNull.notNullValue;
  */
 public class JwtProducerTest {
 
+    // https://javadigest.wordpress.com/2012/08/26/rsa-encryption-example/
+
     @Test
-    public void createToken() throws Exception {
+    public void verifySignatureSuccessWhenNoClaimchanged() throws Exception {
         String issuer = "a issuer";
         String secret = "secret";
-        JwtToken signedToken = new JwtToken(issuer).withExpireClaim(1).sign(secret);
+        JwtToken signedToken = new JwtToken(issuer).sign(secret);
+        JwtToken parsedToken = JwtToken.parseTokenFrom(signedToken.toBase64());
 
-        assertThat(signedToken.claims.get(JwtToken.CLAIM_NAME_ISSUER), equalTo(issuer));
-        assertThat(signedToken.signature, notNullValue());
-
-        JwtToken.verifyTokenSignature(signedToken.toBase64(), issuer, secret);
-
-        JwtToken.verifyTokenSignature(JwtToken.AUTHENTICATION_SCHEME + " " + signedToken.toBase64(), issuer, secret)
-                .verifyExpiration();
+        parsedToken.verifySignature(secret);
     }
 
     @Test(expected=Exception.class)
-    public void verifyExpiration() throws Exception {
+    public void verifySignatureFailsWhenIssuerClaimChanged() throws Exception {
+        String issuer = "a issuer";
+        String secret = "secret";
+        JwtToken signedToken = new JwtToken(issuer).sign(secret);
+
+        signedToken.claims.put(JwtToken.CLAIM_NAME_ISSUER, "changed issuer");
+
+        JwtToken.parseTokenFrom(signedToken.toBase64()).verifySignature(secret);
+    }
+
+    @Test(expected=Exception.class)
+    public void verifyExpirationOnExpiredToken() throws Exception {
         String issuer = "a issuer";
         JwtToken unSignedToken = new JwtToken(issuer).withExpireClaim(0);
         unSignedToken.verifyExpiration();
+    }
+
+    @Test(expected=Exception.class)
+    public void verifyClientIpFailsonReplayedTokenFronDifferentClient() throws Exception {
+        String issuer = "a issuer";
+        String clientIp = InetAddress.getLocalHost().getHostAddress();
+        String wrongIp = "199.168.1.99";
+
+        JwtToken unSignedToken = new JwtToken(issuer).withClientIpClaim(clientIp);
+        unSignedToken.verifyClientIp(wrongIp);
     }
 }

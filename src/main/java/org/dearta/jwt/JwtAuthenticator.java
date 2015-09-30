@@ -20,7 +20,8 @@ public class JwtAuthenticator implements Authenticator<String, User> {
     public Optional<User> authenticate(String jwtTokenString) {
         try {
             JwtToken jwtToken = JwtToken
-                    .verifyTokenSignature(jwtTokenString, "DEARTA", this.secret)
+                    .parseTokenFrom(jwtTokenString)
+                    .verifySignature(this.secret)
                     .verifyExpiration();
 
             User user = new User(jwtToken.claims.get(JwtToken.CLAIM_NAME_USER));

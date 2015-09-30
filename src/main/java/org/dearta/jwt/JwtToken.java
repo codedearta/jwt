@@ -3,6 +3,7 @@ package org.dearta.jwt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -20,13 +22,13 @@ import java.util.regex.Pattern;
  */
 public class JwtToken {
 
-    public static final String JOSE_NAME_ALGORITHM = "alg ";
-    public static final String JOSE_NAME_TYPE = "typ ";
+    public static final String JOSE_NAME_ALGORITHM = "alg";
+    public static final String JOSE_NAME_TYPE = "typ";
 
-    public static final String CLAIM_NAME_ID = "jti ";
-    public static final String CLAIM_NAME_ISSUER = "iss ";
-    public static final String CLAIM_NAME_EXPIRE = "exp ";
-    public static final String CLAIM_NAME_CLIENT_IP = "cip ";
+    public static final String CLAIM_NAME_ID = "jti";
+    public static final String CLAIM_NAME_ISSUER = "iss";
+    public static final String CLAIM_NAME_EXPIRE = "exp";
+    public static final String CLAIM_NAME_CLIENT_IP = "cip";
     public static final String CLAIM_NAME_USER = "usr";
 
     public static final String AUTHENTICATION_SCHEME = "Baerer";
@@ -35,14 +37,14 @@ public class JwtToken {
     public final Map<String, String> claims = new HashMap<String, String>();
     public byte[] signature;
 
-    JwtToken(){
-
-    }
-
     public JwtToken(String issuer){
         headers.put(JOSE_NAME_ALGORITHM, "HS256");
         headers.put(JOSE_NAME_TYPE, "JWT");
         withIssuerClaim(issuer);
+    }
+
+    private JwtToken(){
+
     }
 
     public JwtToken withIssuerClaim(String issuer) {
@@ -89,51 +91,42 @@ public class JwtToken {
         return signature == null ? payloadAsBase64() : payloadAsBase64() + "." + new String(Base64.getEncoder().encode(signature));
     }
 
-    public static JwtToken verifyTokenSignature(String tokenString, String issuer, String secret) throws Exception {
-        JwtToken parsedJwtToken = parseTokenFrom(tokenString);
-
-        JwtToken serverToken = new JwtToken(issuer);
-        serverToken.headers.putAll(parsedJwtToken.headers);
-        serverToken.claims.putAll(parsedJwtToken.claims);
-        serverToken.withIssuerClaim(issuer);
-        serverToken.sign(secret);
-
-        String serverSignature = new String(serverToken.signature);
-        String parsedSignature = new String(parsedJwtToken.signature);
-        if(serverSignature.equals(parsedSignature)) {
-            return parsedJwtToken;
-        }
-
-        throw new Exception("invalid token");
-    }
-
-    public JwtToken verifyExpiration() throws Exception {
-        if (LocalDateTime.now().isAfter(LocalDateTime.parse(this.claims.get(JwtToken.CLAIM_NAME_EXPIRE), DateTimeFormatter.ISO_DATE_TIME))){
+    public JwtToken verifySignature(String secret) throws Exception {
+        String givenSignature = new String(this.signature);
+        this.sign(secret);
+        if(!givenSignature.equals(new String(this.signature))) {
+            this.signature = givenSignature.getBytes();
             throw new Exception("invalid Token");
         }
 
         return this;
     }
 
+    public JwtToken verifyExpiration() throws Exception {
+        if (LocalDateTime.now().isAfter(LocalDateTime.parse(this.claims.get(JwtToken.CLAIM_NAME_EXPIRE), DateTimeFormatter.ISO_DATE_TIME))){
+            throw new Exception("invalid Token");
+        }
+        return this;
+    }
+
     private String payloadAsBase64() throws JsonProcessingException {
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ObjectWriter ow = new ObjectMapper().enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS).writer().withDefaultPrettyPrinter();
         String headersJson = ow.writeValueAsString(this.headers);
         String headersBase64 = new String(Base64.getEncoder().encode(headersJson.getBytes()));
         String claimsJson = ow.writeValueAsString(this.claims);
         String claimsBase64 = new String(Base64.getEncoder().encode(claimsJson.getBytes()));
-        return headersBase64 + "." + claimsBase64;
+        String payloadBase64 = headersBase64 + "." + claimsBase64;
+        return payloadBase64;
     }
 
     private byte[] encodeHmac(String secret, String data) throws Exception {
         Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        String saltedSecret = LocalDate.now().toString() + secret;
-        SecretKeySpec secret_key = new SecretKeySpec(saltedSecret.getBytes("UTF-8"), "HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256");
         sha256_HMAC.init(secret_key);
-
         return sha256_HMAC.doFinal(data.getBytes("UTF-8"));
     }
 
-    private static JwtToken parseTokenFrom(String tokenString) throws Exception {
+    public static JwtToken parseTokenFrom(String tokenString) throws Exception {
         String tokenWithNoSchema = tokenString.replace(AUTHENTICATION_SCHEME, "").trim();
         String[] parts = tokenWithNoSchema.split(Pattern.quote("."));
         String headersJson = new String(Base64.getDecoder().decode(parts[0].getBytes()));
@@ -150,4 +143,11 @@ public class JwtToken {
         return jwtToken;
     }
 
+    public JwtToken verifyClientIp(String clientIp) throws Exception {
+        if (!clientIp.equals(this.claims.get(JwtToken.CLAIM_NAME_CLIENT_IP))){
+            throw new Exception("invalid Token");
+        }
+
+        return this;
+    }
 }
