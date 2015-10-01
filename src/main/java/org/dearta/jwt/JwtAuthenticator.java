@@ -30,10 +30,4 @@ public class JwtAuthenticator implements Authenticator<String, User> {
             return Optional.absent();
         }
     }
-
-    private void verifyExpiration(JwtToken jwtToken) throws Exception {
-        if (LocalDateTime.now().isAfter(LocalDateTime.parse(jwtToken.claims.get(JwtToken.CLAIM_NAME_EXPIRE), DateTimeFormatter.ISO_DATE_TIME))){
-            throw new Exception("invalid Token");
-        }
-    }
 }
