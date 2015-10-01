@@ -1,4 +1,4 @@
-package org.dearta.jwt.configuration;
+package com.dearta.security.jwt.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;

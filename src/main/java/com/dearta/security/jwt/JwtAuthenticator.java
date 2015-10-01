@@ -1,10 +1,7 @@
-package org.dearta.jwt;
+package com.dearta.security.jwt;
 
 import com.google.common.base.Optional;
 import io.dropwizard.auth.Authenticator;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Created by sepp on 26.09.15.

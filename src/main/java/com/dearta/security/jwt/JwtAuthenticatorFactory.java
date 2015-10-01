@@ -1,14 +1,12 @@
-package org.dearta.jwt;
+package com.dearta.security.jwt;
 
 import com.google.common.base.Optional;
-import com.google.common.io.BaseEncoding;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.DefaultUnauthorizedHandler;
 import io.dropwizard.auth.UnauthorizedHandler;
-import io.dropwizard.auth.basic.BasicCredentials;
-import java.nio.charset.StandardCharsets;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;

@@ -1,11 +1,9 @@
-import org.dearta.jwt.JwtToken;
+package com.dearta.security;
+
+import com.dearta.security.jwt.JwtToken;
 import org.junit.Test;
 
 import java.net.InetAddress;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 /**
  * Created by sepp on 27.09.15.
@@ -13,7 +11,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class JwtProducerTest {
 
     // https://javadigest.wordpress.com/2012/08/26/rsa-encryption-example/
-
 
     @Test
     public void verifySignatureSuccessWhenNoClaimchanged() throws Exception {

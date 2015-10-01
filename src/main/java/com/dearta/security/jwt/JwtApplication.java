@@ -1,12 +1,12 @@
-package org.dearta.jwt;
+package com.dearta.security.jwt;
 
+import com.dearta.security.jwt.resources.AuthResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.dearta.jwt.configuration.JwtConfiguration;
-import org.dearta.jwt.resources.AuthResource;
+import com.dearta.security.jwt.configuration.JwtConfiguration;
 
 /**
  * Created by sepp on 26.09.15.

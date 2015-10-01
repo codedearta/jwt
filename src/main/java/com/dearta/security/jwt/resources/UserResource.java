@@ -1,8 +1,8 @@
-package org.dearta.jwt.resources;
+package com.dearta.security.jwt.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.dearta.security.jwt.User;
 import io.dropwizard.auth.Auth;
-import org.dearta.jwt.User;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

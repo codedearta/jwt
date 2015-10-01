@@ -1,4 +1,4 @@
-package org.dearta.jwt;
+package com.dearta.security.jwt;
 
 /**
  * Created by sepp on 26.09.15.

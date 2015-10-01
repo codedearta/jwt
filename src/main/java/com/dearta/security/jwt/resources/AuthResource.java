@@ -1,11 +1,11 @@
-package org.dearta.jwt.resources;
+package com.dearta.security.jwt.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.dearta.security.jwt.JwtToken;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.auth.Auth;
-import org.dearta.jwt.JwtToken;
-import org.dearta.jwt.User;
-import org.dearta.jwt.configuration.JwtConfiguration;
+import com.dearta.security.jwt.User;
+import com.dearta.security.jwt.configuration.JwtConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;

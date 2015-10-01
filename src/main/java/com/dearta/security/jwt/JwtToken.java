@@ -1,4 +1,4 @@
-package org.dearta.jwt;
+package com.dearta.security.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,13 +7,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
