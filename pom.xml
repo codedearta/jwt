@@ -4,9 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.dearta.jwt</groupId>
+    <groupId>com.dearta.security.jwt</groupId>
     <artifactId>jwt</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>jwt core</name>
+    <description>The jwt core library</description>
+    <url>http://code.dearta.com</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>http://github.com/codedearta/jwt.git</url>
+    </scm>
 
     <properties>
         <dropwizard.version>0.8.4</dropwizard.version>
